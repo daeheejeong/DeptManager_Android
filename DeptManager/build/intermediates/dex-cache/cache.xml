@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="/Users/daehee/Downloads/DeptManager/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="fc590a8bc94d10ac3929997f91f8a68c85958a39">
+        <dex dex="/Users/daehee/Downloads/DeptManager/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_b57191d057336d968280fa551db8130fb51ede51/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/daehee/.android/build-cache/4d4d29d95143700a6753b778a4034d40a3dae169/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="756f6297eef79784f5e356dcd4f39865028b2bd0">
+        <dex dex="/Users/daehee/Downloads/DeptManager/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_52f558be4abc40393b696d73513782415afbae29/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/daehee/.android/build-cache/c8488fd7d867a4a8e165b2544541e7c4b27cbb26/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="6addaba208e21c6da776d0ca75b6b23a6ccd5499">
+        <dex dex="/Users/daehee/Downloads/DeptManager/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_74a11f2ec627a153fc30d66720d94fcaa3d51112/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/daehee/.android/build-cache/964b9b430718b1e18d7d0c477e62e5e51c45b2e5/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="4b17463c814bdc562fb0392fa3494063623a0904">
+        <dex dex="/Users/daehee/Downloads/DeptManager/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_7f1d5197f0e355279a9e9867846cdba549fddd38/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/daehee/.android/build-cache/6726b4edd788dbfbe0d79c4182ce1878671b485e/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="486371f97baad8e607f332f20fee1d3dd00a731a">
+        <dex dex="/Users/daehee/Downloads/DeptManager/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_d823448b0ac7e938b08cd93f6f25c3469e0d7a69/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/daehee/.android/build-cache/993761a7833f8db85fecd02c5776d13456483ef6/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="6116e0e7069de7fc259aac8e08b84f32c2038231">
+        <dex dex="/Users/daehee/Downloads/DeptManager/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_4954bd34d6e3a83d7f3cead27d94e5d0fc8a54c1/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/daehee/.android/build-cache/a79f7c5b7c79965bfd1041060f91b0dfe9e2922f/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="433f4d6aa5f21f19552afe0e6c5eff0fedba73ad">
+        <dex dex="/Users/daehee/Downloads/DeptManager/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_db1fb99461e48d9a7b75b2c4809b5b302aa7fcd2/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/daehee/Downloads/DeptManager/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="3be78ebc2706b2e1fe2f12d5726887a92d6c183b">
+        <dex dex="/Users/daehee/Downloads/DeptManager/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_8fc49b63f3b7a05f039e2af3323d6c3f8d1c71d3/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/daehee/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.5/686c608d1805b6d4d425ec4459e88164ffc85870/gson-2.5.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="686c608d1805b6d4d425ec4459e88164ffc85870">
+        <dex dex="/Users/daehee/Downloads/DeptManager/app/build/intermediates/transforms/dex/debug/folders/1000/10/gson-2.5_454d19238f62ec34718d322a4fe7d2273b1d8efe/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/daehee/.android/build-cache/bc37f2dc511dceb6ff38d48fa47a38ca1081bf15/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="eb0d830e3eabb9deb9ec44869cf7ac7ea1ad794c">
+        <dex dex="/Users/daehee/Downloads/DeptManager/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_fb8a1ff4ceb16e6a1db706918e6696045412f015/classes.dex" />
+    </item>
+
+</items>

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "278452110149",
+    "firebase_url": "https://deptmanager-4f50e.firebaseio.com",
+    "project_id": "deptmanager-4f50e",
+    "storage_bucket": "deptmanager-4f50e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:278452110149:android:3fb76382787ab782",
+        "android_client_info": {
+          "package_name": "com.capstone.deptmanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "278452110149-7ln64k1q0o9brigfifkqd19d34p99d95.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC95kFlYsd6OQzmlQoWTW7L49yD00VrrdI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
