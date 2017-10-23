@@ -10,11 +10,31 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity {
 
     private WebView wv;
     private Toast t;
     private JSInterface mJSInterface;
+    private boolean isAutoLogin = false;
+    private boolean firstAccessToLogin = false;
+    private String ip = "192.168.200.168";
+    private String id = "";
+    private String pw = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
         /**
          * http://{IP 주소}:{포트}/{이하 원하는 Url}
          */
-        String address = "http://192.168.1.41:8080/member/loginMemberForm.do";
+
+        String address = "http://" + ip + ":8080/index.do";
         wv.loadUrl(address); // 해당 주소로 사이트 연결
         // 안드로이드에서는 기본적으로 WebView 로 사이트 이동 시도시
         // 기본 브라우저를 통해서 접속하도록 유도하고있다.
@@ -56,10 +77,32 @@ public class MainActivity extends AppCompatActivity {
                 // super.onPageFinished(view, url); 부모메서드 들어가보면 하는 것 없음 지워도됨
                 //float elapsedTime = (System.currentTimeMillis() - time)/1000f;
                 //Toast.makeText(getApplicationContext(), "onPageFinished", Toast.LENGTH_SHORT).show();
-                view.loadUrl("javascript:(function() { "
-//                        + "var x= $('.main-header>a').css('display');"
-//                        + "window.mJSInterface.setSmile(x);"
-                        + "})()");
+
+//                view.loadUrl("javascript:(function() { "
+////                        + "var x= $('.main-header>a').css('display');"
+////                        + "window.mJSInterface.setSmile(x);"
+//                        + "})()");
+                if (url.contains("index.do")) {
+
+                    // index.do 화면 최초진입인지를 확인한다 => 최초진입일시 이전화면에서 자동로그인 선택여부에 따라 pref 에 저장한다.
+                    if (firstAccessToLogin == false) {
+                        firstAccessToLogin = true;
+                        //Toast.makeText(getApplicationContext(), "index.do 최초 진입입", Toast.LENGTH_SHORT).show();
+                        if (isAutoLogin) {
+                            Toast.makeText(getApplicationContext(), "isAutoLogin", Toast.LENGTH_SHORT).show();
+
+                            // 로그인 화면 이후의 첫 index 화면일때 + 로그인화면에서 자동로그인 선택하였을때
+                            // -> pref 아이디 저장 및 서버로 아이디와 토큰을 보내 수정
+
+                            // 토큰 전송 로직
+                           //
+                            updateTokenToServer();
+
+                        } else {
+                            Toast.makeText(getApplicationContext(), "notAutoLogin", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
             }
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
@@ -79,6 +122,11 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         }); // 현재화면의 WebVew 에서 사이트 이동하게 하는 코드
+
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken(); // 토큰을 발급받는다.
+        Log.e("MyLog", "토큰 : " + refreshedToken);
+
+
     } // end of onCreate
 
     public void showToast(String msg) {
@@ -93,11 +141,85 @@ public class MainActivity extends AppCompatActivity {
         if (t != null) t.cancel();
     }
 
+    @Override
+    public void onBackPressed() {
+        String str = wv.getUrl();
+        if (str.contains("index.do")) {
+            super.onBackPressed();
+        } else if (str.contains("login")) {
+            super.onBackPressed();
+        } else {
+            wv.goBack();
+        }
+    }
+
+    public void updateTokenToServer() {
+
+        final RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        final StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://" + ip + ":8080/member/updateMemberProc.do", new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+//                Log.d("MyLog", "response: " + response);
+
+                String utf8Str = "";
+                try {
+                    utf8Str = new String(response.getBytes("ISO-8859-1"), "KSC5601");
+//                    Log.d("MyLog", "response encoded: " + utf8Str);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                if (utf8Str != null && !"".equals(utf8Str)) {
+                    Log.d("MyLog", "utf8Str : " + utf8Str);
+                    JsonParser parser = new JsonParser();
+                    JsonObject rootObj = (JsonObject) parser.parse(utf8Str);
+                    String result = rootObj.get("result").getAsString();
+
+                    if ("success".equals(result)) {
+                        showToast("토큰 업데이트 성공");
+                    } else {
+                        showToast("토큰 업데이트 실패");
+                    }
+                }
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("MyLog", "error : " + error);
+                final VolleyError err = error;
+
+                Log.d("MyLog", err.toString()+"");
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("memberId", id);
+                params.put("memberToken", PrefUtil.getPreference(getApplicationContext(), PrefUtil.KET_PUSH_TOKEN));
+                return params;
+            }
+        };
+        requestQueue.add(stringRequest);
+
+    } // end of updateTokenToServer
+
     class JSInterface {
         @JavascriptInterface
         public void setSmile(String msg) {
             showToast(msg);
         }
+
+        @JavascriptInterface
+        public void setAutoLogin(String paramId, String paramPw) {
+            isAutoLogin = !isAutoLogin;
+
+            id = paramId;
+            pw = paramPw;
+        };
     } // end of inner class
+
 
 } // end of class
