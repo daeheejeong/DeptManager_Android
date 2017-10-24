@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,8 +51,32 @@ public class MainActivity extends AppCompatActivity {
          * http://{IP 주소}:{포트}/{이하 원하는 Url}
          */
 
+        // 메인화면
         String address = "http://" + ip + ":8080/index.do";
-        wv.loadUrl(address); // 해당 주소로 사이트 연결
+
+        // 화면 분기
+        String prefStr = PrefUtil.getPreference(getApplicationContext(), PrefUtil.KET_USER_ID);
+        if (prefStr != null && !"".equals(prefStr)) {
+            // SharedPref ID 값이 있다면 (자동 로그인이라면)
+            Log.d("MyLog", "ID: " + PrefUtil.getPreference(getApplicationContext(), PrefUtil.KET_USER_ID));
+            Log.d("MyLog", "PW: " + PrefUtil.getPreference(getApplicationContext(), PrefUtil.KET_USER_PW));
+            try {
+                Log.d("MyLog", "autoLoginMemberForm.do");
+                String memberId = PrefUtil.getPreference(getApplicationContext(), PrefUtil.KET_USER_ID);
+                String memberPw = PrefUtil.getPreference(getApplicationContext(), PrefUtil.KET_USER_PW);
+                String data = "memberId=" + URLEncoder.encode(memberId, "UTF-8")
+                        + "&memberPw=" + URLEncoder.encode(memberPw, "UTF-8");
+                wv.postUrl("http://" + ip + ":8080/member/autoLoginMemberForm.do", data.getBytes());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            Log.d("MyLog", "login.do");
+            wv.loadUrl(address); // 자동 로그인 아니라면 디펄트 화면으로 분기 (로그인 화면)
+        }
+         // 해당 주소로 사이트 연결
         // 안드로이드에서는 기본적으로 WebView 로 사이트 이동 시도시
         // 기본 브라우저를 통해서 접속하도록 유도하고있다.
 
@@ -96,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
                             // 토큰 전송 로직
                            //
+                            saveLoginInfo();
                             updateTokenToServer();
 
                         } else {
@@ -219,7 +245,38 @@ public class MainActivity extends AppCompatActivity {
             id = paramId;
             pw = paramPw;
         };
+
+        // 웹뷰로 부터 넘어온 로그인 정보를 로컬변수에 저장 (추후 로그인 성공여부에 따라 SharedPreference 저장 여부가 결정됨
+        @JavascriptInterface
+        public void setLoginInfo(String paramId, String paramPw) {
+            isAutoLogin = true;
+            id = paramId;
+            pw = paramPw;
+        } // end of setLoginInfo
+
+        @JavascriptInterface
+        public void doLogOut() {
+            doLogOutNative();
+        }
     } // end of inner class
 
 
+    // 로그인 정보 저장 함수. JSInterface 내 setLoginInfo 메서드와 혼동 주의
+    public void saveLoginInfo() {
+        PrefUtil.setPreference(getApplicationContext(), PrefUtil.KET_USER_ID, id);
+        PrefUtil.setPreference(getApplicationContext(), PrefUtil.KET_USER_PW, pw);
+    } // end of saveLoginInfo
+
+    public void doLogOutNative() {
+        Log.d("MyLog", "doLogOutNative()");
+        PrefUtil.rmPreference(getApplicationContext(), PrefUtil.KET_USER_ID);
+        PrefUtil.rmPreference(getApplicationContext(), PrefUtil.KET_USER_PW);
+    } // doLogOutNative
+
+    @Override
+    protected void onStop() {
+        // TODO 세션 해제 작업 요망
+        wv.loadUrl("http://" + ip + ":8080/member/logoutMemberProc.do");
+        super.onStop();
+    }
 } // end of class

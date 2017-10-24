@@ -31,8 +31,5 @@ dependencies {
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.google.code.gson:gson:2.5'
     testCompile 'junit:junit:4.12'
-
-
-
 }
 apply plugin: 'com.google.gms.google-services'

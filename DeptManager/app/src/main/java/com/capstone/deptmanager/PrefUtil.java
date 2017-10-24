@@ -24,4 +24,10 @@ public class PrefUtil {
         SharedPreferences prefs = context.getSharedPreferences(KET_PUSH_TOKEN, Activity.MODE_PRIVATE);
         return prefs.getString(key, "");
     }
+    public static void rmPreference(Context context, String key) {
+        SharedPreferences prefs = context.getSharedPreferences(KET_PUSH_TOKEN, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove(key);
+        editor.commit();
+    }
 } // end of class
