@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private JSInterface mJSInterface;
     private boolean isAutoLogin = false;
     private boolean firstAccessToLogin = false;
-    private String ip = "192.168.200.168";
+//    private String ip = "192.168.200.168";
+    private String ip = "eoeowo.cafe24.com";
     private String id = "";
     private String pw = "";
 
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
          */
 
         // 메인화면
-        String address = "http://" + ip + ":8080/index.do";
+        String address = "http://" + ip + "/index.do";
 
         // 화면 분기
         String prefStr = PrefUtil.getPreference(getApplicationContext(), PrefUtil.KET_USER_ID);
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 String memberPw = PrefUtil.getPreference(getApplicationContext(), PrefUtil.KET_USER_PW);
                 String data = "memberId=" + URLEncoder.encode(memberId, "UTF-8")
                         + "&memberPw=" + URLEncoder.encode(memberPw, "UTF-8");
-                wv.postUrl("http://" + ip + ":8080/member/autoLoginMemberForm.do", data.getBytes());
+                wv.postUrl("http://" + ip + "/member/autoLoginMemberForm.do", data.getBytes());
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -182,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
     public void updateTokenToServer() {
 
         final RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        final StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://" + ip + ":8080/member/updateMemberProc.do", new Response.Listener<String>() {
+        final StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://" + ip + "/member/updateMemberProc.do", new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
@@ -276,7 +277,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         // TODO 세션 해제 작업 요망
-        wv.loadUrl("http://" + ip + ":8080/member/logoutMemberProc.do");
+        // 생명주기 내에서 로그아웃 url 을 호출하면
+        // 화면이 꺼질때도 로그아웃이된다는 문제점이 발생한다.
+        // 따라서
+        // TODO 로그아웃 기능을 생명주기에서 구현하지 않고 앱 내에서 발생하는 백키의 경우를 수를 명확히 정의하고 그안에서 로그아웃 기능을 호출하도록 바꾼다.
+        wv.loadUrl("http://" + ip + "/member/logoutMemberProc.do");
         super.onStop();
     }
 } // end of class
