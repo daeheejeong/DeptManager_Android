@@ -1,5 +1,6 @@
 package com.capstone.deptmanager;
 
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,10 +34,11 @@ public class MainActivity extends AppCompatActivity {
     private JSInterface mJSInterface;
     private boolean isAutoLogin = false;
     private boolean firstAccessToLogin = false;
-//    private String ip = "192.168.200.168";
+//    private String ip = "192.168.200.168:8080";
     private String ip = "eoeowo.cafe24.com";
     private String id = "";
     private String pw = "";
+    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,13 +174,37 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         String str = wv.getUrl();
         if (str.contains("index.do")) {
-            super.onBackPressed();
+            handler.post(backKeyRun);
         } else if (str.contains("login")) {
-            super.onBackPressed();
+            handler.post(backKeyRun);
+        } else if (str.contains("selectSchedule")) {
+            wv.loadUrl("javascript:(function() { "
+                        + "doBack();"
+                        + "})()");
         } else {
             wv.goBack();
         }
     }
+
+    Runnable backKeyRun = new Runnable() {
+        int count = 0;
+        @Override
+        public void run() {
+            if (count < 1) {
+                showToast("뒤로가기를 한번 더 누르시면 종료됩니다");
+                count++;
+            } else {
+                wv.loadUrl("http://" + ip + "/member/logoutMemberProc.do");
+                finish();
+            }
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    count = 0;
+                }
+            }, 2000);
+        }
+    };
 
     public void updateTokenToServer() {
 
@@ -281,7 +307,7 @@ public class MainActivity extends AppCompatActivity {
         // 화면이 꺼질때도 로그아웃이된다는 문제점이 발생한다.
         // 따라서
         // TODO 로그아웃 기능을 생명주기에서 구현하지 않고 앱 내에서 발생하는 백키의 경우를 수를 명확히 정의하고 그안에서 로그아웃 기능을 호출하도록 바꾼다.
-        wv.loadUrl("http://" + ip + "/member/logoutMemberProc.do");
+        //wv.loadUrl("http://" + ip + "/member/logoutMemberProc.do");
         super.onStop();
     }
 } // end of class
