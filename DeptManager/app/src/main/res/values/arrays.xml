@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="timeHuman">
+	    <item>9시</item>
+	    <item>10시</item>
+	    <item>11시</item>
+	    <item>12시</item>
+	    <item>13시</item>
+	</string-array>
+	<string-array name="time">
+	    <item>09:00</item>
+	    <item>10:00</item>
+	    <item>11:00</item>
+	    <item>12:00</item>
+	    <item>13:00</item>
+	</string-array>
+</resources>

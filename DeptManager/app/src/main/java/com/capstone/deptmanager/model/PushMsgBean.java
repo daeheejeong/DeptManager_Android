@@ -1,4 +1,4 @@
-package com.capstone.deptmanager;
+package com.capstone.deptmanager.model;
 
 
 public class PushMsgBean {

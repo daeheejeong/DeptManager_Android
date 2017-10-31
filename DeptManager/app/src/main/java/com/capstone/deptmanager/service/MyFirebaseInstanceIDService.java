@@ -1,4 +1,4 @@
-package com.capstone.deptmanager;
+package com.capstone.deptmanager.service;
 
 import android.util.Log;
 
@@ -9,6 +9,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.capstone.deptmanager.util.PrefUtil;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.gson.JsonObject;

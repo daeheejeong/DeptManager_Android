@@ -1,10 +1,12 @@
-package com.capstone.deptmanager;
+package com.capstone.deptmanager.activity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+
+import com.capstone.deptmanager.R;
 
 /**
  * Created by daehee on 2017. 10. 28..

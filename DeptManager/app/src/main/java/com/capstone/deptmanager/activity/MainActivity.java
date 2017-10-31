@@ -1,14 +1,18 @@
-package com.capstone.deptmanager;
+package com.capstone.deptmanager.activity;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -18,6 +22,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.capstone.deptmanager.util.PrefUtil;
+import com.capstone.deptmanager.R;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -34,11 +40,13 @@ public class MainActivity extends AppCompatActivity {
     private JSInterface mJSInterface;
     private boolean isAutoLogin = false;
     private boolean firstAccessToLogin = false;
-//    private String ip = "192.168.200.168:8080";
-    private String ip = "eoeowo.cafe24.com";
+    private String ip = "192.168.200.168:8080";
+//    private String ip = "eoeowo.cafe24.com";
     private String id = "";
     private String pw = "";
     private Handler handler = new Handler();
+    private ProgressBar pb;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+
+        intent = new Intent(MainActivity.this, SettingActivity.class);
+
+        pb = (ProgressBar) findViewById(R.id.pb);
 
         wv = (WebView) findViewById(R.id.webView1);
 
@@ -110,6 +122,9 @@ public class MainActivity extends AppCompatActivity {
 ////                        + "var x= $('.main-header>a').css('display');"
 ////                        + "window.mJSInterface.setSmile(x);"
 //                        + "})()");
+
+                pb.setVisibility(View.GONE);
+
                 if (url.contains("index.do")) {
 
                     // index.do 화면 최초진입인지를 확인한다 => 최초진입일시 이전화면에서 자동로그인 선택여부에 따라 pref 에 저장한다.
@@ -150,6 +165,12 @@ public class MainActivity extends AppCompatActivity {
                 // 새로운 URL 불러올때
                 return false;
             }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                pb.setVisibility(View.VISIBLE);
+            }
+
         }); // 현재화면의 WebVew 에서 사이트 이동하게 하는 코드
 
         String refreshedToken = FirebaseInstanceId.getInstance().getToken(); // 토큰을 발급받는다.
@@ -171,20 +192,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        String str = wv.getUrl();
-        if (str.contains("index.do")) {
-            handler.post(backKeyRun);
-        } else if (str.contains("login")) {
-            handler.post(backKeyRun);
-        } else if (str.contains("selectSchedule")) {
-            wv.loadUrl("javascript:(function() { "
-                        + "doBack();"
-                        + "})()");
-        } else {
-            wv.goBack();
-        }
+    public void onBackPressed(){
+        wv.loadUrl("javascript:(function() { "
+            + "doBack();"
+            + "})()");
+//        String str = wv.getUrl();
+//        if (str.contains("index.do")) {
+//            handler.post(backKeyRun);
+//        } else if (str.contains("login")) {
+//            handler.post(backKeyRun);
+//        } else if (str.contains("selectSchedule")) {
+//            wv.loadUrl("javascript:(function() { "
+//                        + "doBack();"
+//                        + "})()");
+//        } else {
+//            wv.goBack();
+//        }
     }
+
+
 
     Runnable backKeyRun = new Runnable() {
         int count = 0;
@@ -284,7 +310,19 @@ public class MainActivity extends AppCompatActivity {
         @JavascriptInterface
         public void doLogOut() {
             doLogOutNative();
-        }
+        } // end of doLogOut
+
+        // 웹뷰에서 호출할 네이티브 백키 메서드
+        @JavascriptInterface
+        public void doCustomBackPress() {
+            handler.post(backKeyRun);
+        } // end of doCustomBackPress
+
+        // 설정 액티비티 이동 메서드
+        @JavascriptInterface
+        public void goSetting() {
+            goSettingNative();
+        } // end of goSetting
     } // end of inner class
 
 
@@ -299,6 +337,11 @@ public class MainActivity extends AppCompatActivity {
         PrefUtil.rmPreference(getApplicationContext(), PrefUtil.KET_USER_ID);
         PrefUtil.rmPreference(getApplicationContext(), PrefUtil.KET_USER_PW);
     } // doLogOutNative
+
+    public void goSettingNative() {
+        startActivity(intent);
+        //overridePendingTransition(R.anim.slide_in_right, R.anim.do_nothing);
+    } // end of goSettingNative
 
     @Override
     protected void onStop() {

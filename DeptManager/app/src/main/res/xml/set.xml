@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="어플리케이션 정보">
+		<Preference
+			android:title="버전 정보"
+			android:key="btnVerInfo"
+			android:summary="0.0.9"/>
+
+		<Preference
+			android:title="오픈 소스 라이브러리"
+			android:key="btnLibInfo"/>
+
+		<!-- ListPreference 는 데이터를 연결해주는 작업이 필요하다. -->
+		<!-- Dialog 타이틀도 별도 설정 가능 -->
+	    <!-- entryValues : 사람들한테 보여줘야 할 값 -->
+	    <!-- dialogTitle 실제로 저장될 값 -->
+    </PreferenceCategory>
+
+	<PreferenceCategory android:title="알림 설정">
+		<SwitchPreference
+			android:title="알림 여부"
+			android:key="PREF_NOTI"/>
+		<ListPreference
+			android:title="공지 알림"
+			android:summary="공지 알림 세부설정"
+			android:key="PREF_NOTICE"
+			android:entries="@array/timeHuman"
+			android:entryValues="@array/time"
+			android:dialogTitle="Set Time" />
+		<ListPreference
+			android:title="설문 알림"
+			android:summary="설문 알림 세부설정"
+			android:key="time"
+			android:entries="@array/timeHuman"
+			android:entryValues="@array/time"
+			android:dialogTitle="Set Time" />
+
+	</PreferenceCategory>
+
+	<PreferenceCategory android:title="지원">
+		<Preference
+			android:title="문의하기"
+			android:key="btnAsk"/>
+	</PreferenceCategory>
+
+</PreferenceScreen>
