@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private JSInterface mJSInterface;
     private boolean isAutoLogin = false;
     private boolean firstAccessToLogin = false;
-    private String ip = "192.168.200.168:8080";
-//    private String ip = "eoeowo.cafe24.com";
+//    private String ip = "192.168.200.168:8080";
+    private String ip = "eoeowo.cafe24.com";
     private String id = "";
     private String pw = "";
     private Handler handler = new Handler();
@@ -70,15 +70,15 @@ public class MainActivity extends AppCompatActivity {
         String address = "http://" + ip + "/index.do";
 
         // 화면 분기
-        String prefStr = PrefUtil.getPreference(getApplicationContext(), PrefUtil.KET_USER_ID);
+        String prefStr = PrefUtil.getPreference(getApplicationContext(), PrefUtil.KEY_USER_ID);
         if (prefStr != null && !"".equals(prefStr)) {
             // SharedPref ID 값이 있다면 (자동 로그인이라면)
-            Log.d("MyLog", "ID: " + PrefUtil.getPreference(getApplicationContext(), PrefUtil.KET_USER_ID));
-            Log.d("MyLog", "PW: " + PrefUtil.getPreference(getApplicationContext(), PrefUtil.KET_USER_PW));
+            Log.d("MyLog", "ID: " + PrefUtil.getPreference(getApplicationContext(), PrefUtil.KEY_USER_ID));
+            Log.d("MyLog", "PW: " + PrefUtil.getPreference(getApplicationContext(), PrefUtil.KEY_USER_PW));
             try {
                 Log.d("MyLog", "autoLoginMemberForm.do");
-                String memberId = PrefUtil.getPreference(getApplicationContext(), PrefUtil.KET_USER_ID);
-                String memberPw = PrefUtil.getPreference(getApplicationContext(), PrefUtil.KET_USER_PW);
+                String memberId = PrefUtil.getPreference(getApplicationContext(), PrefUtil.KEY_USER_ID);
+                String memberPw = PrefUtil.getPreference(getApplicationContext(), PrefUtil.KEY_USER_PW);
                 String data = "memberId=" + URLEncoder.encode(memberId, "UTF-8")
                         + "&memberPw=" + URLEncoder.encode(memberPw, "UTF-8");
                 wv.postUrl("http://" + ip + "/member/autoLoginMemberForm.do", data.getBytes());
@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("memberId", id);
-                params.put("memberToken", PrefUtil.getPreference(getApplicationContext(), PrefUtil.KET_PUSH_TOKEN));
+                params.put("memberToken", PrefUtil.getPreference(getApplicationContext(), PrefUtil.KEY_PUSH_TOKEN));
                 return params;
             }
         };
@@ -328,14 +328,14 @@ public class MainActivity extends AppCompatActivity {
 
     // 로그인 정보 저장 함수. JSInterface 내 setLoginInfo 메서드와 혼동 주의
     public void saveLoginInfo() {
-        PrefUtil.setPreference(getApplicationContext(), PrefUtil.KET_USER_ID, id);
-        PrefUtil.setPreference(getApplicationContext(), PrefUtil.KET_USER_PW, pw);
+        PrefUtil.setPreference(getApplicationContext(), PrefUtil.KEY_USER_ID, id);
+        PrefUtil.setPreference(getApplicationContext(), PrefUtil.KEY_USER_PW, pw);
     } // end of saveLoginInfo
 
     public void doLogOutNative() {
         Log.d("MyLog", "doLogOutNative()");
-        PrefUtil.rmPreference(getApplicationContext(), PrefUtil.KET_USER_ID);
-        PrefUtil.rmPreference(getApplicationContext(), PrefUtil.KET_USER_PW);
+        PrefUtil.rmPreference(getApplicationContext(), PrefUtil.KEY_USER_ID);
+        PrefUtil.rmPreference(getApplicationContext(), PrefUtil.KEY_USER_PW);
     } // doLogOutNative
 
     public void goSettingNative() {

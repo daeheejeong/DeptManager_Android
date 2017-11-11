@@ -34,9 +34,9 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         Log.d("onTokenRefresh", refreshedToken);
 
         if (refreshedToken != null && refreshedToken.length() > 0) {
-            PrefUtil.setPreference(getApplicationContext(), PrefUtil.KET_PUSH_TOKEN, refreshedToken);
+            PrefUtil.setPreference(getApplicationContext(), PrefUtil.KEY_PUSH_TOKEN, refreshedToken);
 
-            if ((PrefUtil.getPreference(getApplicationContext(), PrefUtil.KET_USER_ID) != null)) updateTokenToServer();
+            if ((PrefUtil.getPreference(getApplicationContext(), PrefUtil.KEY_USER_ID) != null)) updateTokenToServer();
         }
 //        sendRegistrationToServer(refreshedToken);
 //        내가 추후 정의를 통해서 우리서버의 회원테이블에 토큰값이 저장될 수 있도록 해주어야 한다.
@@ -86,8 +86,8 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("memberId", PrefUtil.getPreference(getApplicationContext(), PrefUtil.KET_USER_ID));
-                params.put("memberToken", PrefUtil.getPreference(getApplicationContext(), PrefUtil.KET_PUSH_TOKEN));
+                params.put("memberId", PrefUtil.getPreference(getApplicationContext(), PrefUtil.KEY_USER_ID));
+                params.put("memberToken", PrefUtil.getPreference(getApplicationContext(), PrefUtil.KEY_PUSH_TOKEN));
                 return params;
             }
         };
