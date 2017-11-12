@@ -22,6 +22,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.capstone.deptmanager.model.NotiBean;
+import com.capstone.deptmanager.util.MySQLiteHandler;
 import com.capstone.deptmanager.util.PrefUtil;
 import com.capstone.deptmanager.R;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -31,6 +33,7 @@ import com.google.gson.JsonParser;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,13 +43,14 @@ public class MainActivity extends AppCompatActivity {
     private JSInterface mJSInterface;
     private boolean isAutoLogin = false;
     private boolean firstAccessToLogin = false;
-//    private String ip = "192.168.200.168:8080";
+//    private String ip = "10.138.43.203:8080";
     private String ip = "eoeowo.cafe24.com";
     private String id = "";
     private String pw = "";
     private Handler handler = new Handler();
     private ProgressBar pb;
     private Intent intent;
+    private MySQLiteHandler mySQLiteHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
         pb = (ProgressBar) findViewById(R.id.pb);
 
         wv = (WebView) findViewById(R.id.webView1);
+
+        mySQLiteHandler = new MySQLiteHandler(getApplicationContext());
 
         /**
          * http://{IP 주소}:{포트}/{이하 원하는 Url}
@@ -138,13 +144,13 @@ public class MainActivity extends AppCompatActivity {
                             // -> pref 아이디 저장 및 서버로 아이디와 토큰을 보내 수정
 
                             // 토큰 전송 로직
-                           //
                             saveLoginInfo();
                             updateTokenToServer();
 
                         } else {
                             Toast.makeText(getApplicationContext(), "notAutoLogin", Toast.LENGTH_SHORT).show();
                         }
+                        setNotiList();
                     }
                 }
             }
@@ -176,20 +182,52 @@ public class MainActivity extends AppCompatActivity {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken(); // 토큰을 발급받는다.
         Log.e("MyLog", "토큰 : " + refreshedToken);
 
-
     } // end of onCreate
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    } // end of onResume
+
+    public void setNotiList() {
+        // 내장 데이터베이스 조회를 통해 알림 목록을 조회한다
+        // 조회된 데이터는 웹뷰에서 스크립트 함수 호출을 통해 웹프론트엔드로 전달하고
+        // 이를 받은 프론트는 화면 스크립트를 이용해 화면에 내용을 append 한다
+
+        //showToast("setNotiList");
+
+        List<NotiBean> notiList = null;
+        notiList = mySQLiteHandler.selectAll();
+
+        String appendStr = "";
+
+        for (NotiBean bean : notiList) {
+
+            appendStr += "<li><ul class='menu'><li><a href='#'><i class='fa fa-users text-aqua'></i>";
+            appendStr += bean.getNo() + "&nbsp;" + bean.getTitle() + "&nbsp;" + bean.getMsg();
+            appendStr += "</a></li></ul></li>";
+
+        } // end of for
+
+        wv.loadUrl("javascript:(function() { "
+                + "$('#ul-noti-list').html(\"" + appendStr + "\");" // 알림목록 li 태그 렌더링
+                + "$('#span-noti-badge').text(" + notiList.size() + ");" // 알림목록 숫자 렌더링
+                + "})()");
+
+        Log.d("MyLog", appendStr + ", " + notiList.size());
+    } // end of setNotiList
 
     public void showToast(String msg) {
         if (t != null) t.cancel();
         t = Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT);
         t.show();
-    }
+    } // end of showToast
 
     @Override
     protected void onPause() {
         super.onPause();
         if (t != null) t.cancel();
-    }
+    } // end of onPause
 
     @Override
     public void onBackPressed(){
@@ -208,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
 //        } else {
 //            wv.goBack();
 //        }
-    }
+    } // end of onBackPressed
 
 
 
@@ -352,5 +390,6 @@ public class MainActivity extends AppCompatActivity {
         // TODO 로그아웃 기능을 생명주기에서 구현하지 않고 앱 내에서 발생하는 백키의 경우를 수를 명확히 정의하고 그안에서 로그아웃 기능을 호출하도록 바꾼다.
         //wv.loadUrl("http://" + ip + "/member/logoutMemberProc.do");
         super.onStop();
+
     }
 } // end of class

@@ -1,6 +1,7 @@
 package com.capstone.deptmanager.service;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,8 +11,10 @@ import android.media.RingtoneManager;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
+import com.capstone.deptmanager.activity.SplashActivity;
 import com.capstone.deptmanager.model.PushMsgBean;
 import com.capstone.deptmanager.R;
+import com.capstone.deptmanager.util.MySQLiteHandler;
 import com.capstone.deptmanager.util.PrefUtil;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -66,10 +69,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //            noti(msgBean);
             noti(bean_data);
         }
+
+
     } // end of onMessageReceived
 
     public void noti(PushMsgBean.Data bean_data) {
 //    public void noti(PushMsgBean msgBean) {
+
+        String title = bean_data.getTitle();
+        String msg = bean_data.getMessage();
+        String date = bean_data.getTime();
+
+        Intent intent= new Intent(getApplicationContext(), SplashActivity.class);
+        PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
         NotificationCompat.Builder notiBuilder = new NotificationCompat.Builder(this);
         notiBuilder.setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
@@ -78,10 +91,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentTitle(bean_data.getTitle())
 //                .setContentText("푸시 내용")
                 .setContentText(bean_data.getMessage())
+                .setContentIntent(pIntent)
                 .setAutoCancel(true)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify((int)System.currentTimeMillis(), notiBuilder.build());
+
+        // 노티피케이션 띄운 후 앱의 데이터베이스에도 저장한다.
+        MySQLiteHandler mySQLiteHandler = new MySQLiteHandler(getApplicationContext());
+        mySQLiteHandler.insert(title, msg, date, 0); // 0: 안읽음
+        mySQLiteHandler.selectAll();
     } // end of noti
 
     // 런처클래스 이름을 얻어내는 함수
